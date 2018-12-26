@@ -6,23 +6,23 @@ import logo from './logo.svg';
 import './App.css';
 
 const client = new ApolloClient({
-  uri: 'https://api-euwest.graphcms.com/v1/cjq521kub8sha01b0qi9v1axb/master'
+  uri: 'http://localhost:4000/graphql'
 });
 
 // a way to fetch data outside React methods
 const POSTS_QUERY = gql`
   {
-    posts {
+    getBooks {
       id
-      title
-      body
+      name
+      genre
     }
   }
 `;
 
-client.query({
-  query: POSTS_QUERY
-}).then(res => console.log(res))
+// client.query({
+//   query: POSTS_QUERY
+// }).then(res => console.log(res))
 
 class App extends Component {
   render() {
@@ -37,12 +37,12 @@ class App extends Component {
             <Query query={POSTS_QUERY}>
               {({loading, data}) => {
                 if(loading) return 'Loading...';
-                const {posts} = data;
-                return posts.map(post => {
+                const {getBooks} = data;
+                return getBooks.map(book => {
                   return (
-                    <div key={post.id} className='posts'>
-                      <h2>{post.title}</h2>
-                      <p>{post.body}</p>
+                    <div key={book.id} className='books'>
+                      <h2>{book.name}</h2>
+                      <p>{book.genre}</p>
                     </div>
                   )
                 })
@@ -52,12 +52,12 @@ class App extends Component {
 
         </div>
         <style>{`
-          .posts h2 {
+          .books h2 {
             font-weight: 500;
             font-size: 22px;
             font-style: oblique;
           }
-          .posts p {
+          .books p {
             font-weight: 300;
             font-size: 18px;
           }
