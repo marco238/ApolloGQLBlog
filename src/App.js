@@ -9,7 +9,8 @@ const client = new ApolloClient({
   uri: 'https://api-euwest.graphcms.com/v1/cjq521kub8sha01b0qi9v1axb/master'
 });
 
-const testQuery = gql`
+// a way to fetch data outside React methods
+const POSTS_QUERY = gql`
   {
     posts {
       id
@@ -20,7 +21,7 @@ const testQuery = gql`
 `;
 
 client.query({
-  query: testQuery
+  query: POSTS_QUERY
 }).then(res => console.log(res))
 
 class App extends Component {
@@ -31,18 +32,36 @@ class App extends Component {
           <header className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
             <p>
-              Edit <code>src/App.js</code> and save to reload.
+              React <code>*ApolloGQL*</code> Blog
             </p>
-            <a
-              className="App-link"
-              href="https://reactjs.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn React
-            </a>
+            <Query query={POSTS_QUERY}>
+              {({loading, data}) => {
+                if(loading) return 'Loading...';
+                const {posts} = data;
+                return posts.map(post => {
+                  return (
+                    <div key={post.id} className='posts'>
+                      <h2>{post.title}</h2>
+                      <p>{post.body}</p>
+                    </div>
+                  )
+                })
+              }}
+            </Query>
           </header>
+
         </div>
+        <style>{`
+          .posts h2 {
+            font-weight: 500;
+            font-size: 22px;
+            font-style: oblique;
+          }
+          .posts p {
+            font-weight: 300;
+            font-size: 18px;
+          }
+        `}</style>
       </ApolloProvider>
     );
   }
